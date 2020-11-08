@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home </title>
+</head>
+<body>
+    <h3>Hello from the other side</h3>
+    <button id="login">Login</button>
+    <button id='get'> Get Posts</button>
+</body>
+<style>
+    button{
+        padding: 10px 10px;
+        outline: none;
+        border-radius:3px;
+        background-color: bisque;
+        color: black;
+        border: 1px solid grey;
+        
+    }
+    button:hover{
+        background-color: whitesmoke;
+        border: 1px solid grey;
+    }
+</style>
+<script>
+    const button = document.querySelector('#login')
+    const getButton = document.querySelector('#get')
+
+    const user = {
+        'id':1,
+        'username': "NguyenVanHai1",
+        'email': "shinminah357159@gmail.com"
+    }
+
+    button.addEventListener('click',async () =>{
+        const response = await fetch('http://localhost:5000/api/login',{
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'id':1,
+                'username':"nguyenvanhai",
+                'email':'shinminah357159@gmail.com'
+            })
+        });
+        const result  = await  response.json();
+        localStorage.setItem('token',result.token)
+        console.log(result)
+    })
+
+    getButton.addEventListener('click',async () =>{
+        const response = await fetch('http://localhost:5000/api/posts',{
+            method : 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : localStorage.getItem('token')
+            }
+        });
+        if(response.status != 403){
+            const result  = await  response.json();
+             //localStorage.setItem('token',result)
+            console.log(result)
+        }
+        else{
+            console.log("Forbidden");
+        }
+    })
+</script>
+</html>
